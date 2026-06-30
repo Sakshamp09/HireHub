@@ -7,6 +7,12 @@ import com.hirehub.dto.RegisterRequest;
 import com.hirehub.dto.RegisterResponse;
 import com.hirehub.service.UserService;
 
+import com.hirehub.dto.LoginRequest;
+import com.hirehub.dto.LoginResponse;
+import jakarta.validation.Valid;
+
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -15,9 +21,15 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public RegisterResponse registerUser(@RequestBody RegisterRequest request) {
+    public RegisterResponse registerUser(@Valid @RequestBody RegisterRequest request) {
 
         return userService.registerUser(request);
 
+    }
+    
+    @PostMapping("/login")
+    public LoginResponse loginUser(@Valid @RequestBody LoginRequest request) {
+
+        return userService.loginUser(request);
     }
 }
