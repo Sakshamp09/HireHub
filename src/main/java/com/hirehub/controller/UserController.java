@@ -11,8 +11,6 @@ import com.hirehub.dto.LoginRequest;
 import com.hirehub.dto.LoginResponse;
 import jakarta.validation.Valid;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -31,5 +29,11 @@ public class UserController {
     public LoginResponse loginUser(@Valid @RequestBody LoginRequest request) {
 
         return userService.loginUser(request);
+    }
+    
+    @GetMapping("/profile")
+    public String profile() {
+
+        return "Welcome to HireHub";
     }
 }

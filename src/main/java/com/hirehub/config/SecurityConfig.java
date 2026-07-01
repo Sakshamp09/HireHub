@@ -8,8 +8,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.hirehub.security.JwtFilter;
+
 @Configuration
 public class SecurityConfig {
+	
+	@Autowired
+	private JwtFilter jwtFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -22,14 +31,17 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
+            .sessionManagement(session ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/api/users/register",
-                    "/api/users/login"
-                ).permitAll()
-                .anyRequest().authenticated()
+                    .requestMatchers(
+                            "/api/users/register",
+                            "/api/users/login"
+                    ).permitAll()
+                    .anyRequest().authenticated()
             )
-            .httpBasic(Customizer.withDefaults());
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .httpBasic(httpBasic -> httpBasic.disable());
 
         return http.build();
     }
