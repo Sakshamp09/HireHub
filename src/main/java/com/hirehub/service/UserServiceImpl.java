@@ -14,6 +14,7 @@ import com.hirehub.entity.User;
 import com.hirehub.enums.AccountStatus;
 import com.hirehub.enums.Role;
 import com.hirehub.repository.UserRepository;
+import com.hirehub.security.JwtUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -23,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     public RegisterResponse registerUser(RegisterRequest request) {
@@ -69,8 +73,11 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Invalid Password");
         }
 
+        String token = jwtUtil.generateToken(user.getEmail());
+
         return new LoginResponse(
                 user.getId(),
+                token,
                 "Login Successful"
         );
     }
